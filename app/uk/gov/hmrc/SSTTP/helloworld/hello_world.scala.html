@@ -1,5 +1,17 @@
-@()(implicit request: Request[_])
+@()(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
+@import play.api.Play.current
+@import play.api.i18n.Messages
+@import play.api.mvc.Flash
+@import helper._
+
 
 @uk.gov.hmrc.SSTTP.html.main_template(title = "Hello from SSTTP-frontend", bodyClasses = None) {
     <h1>Hello from SSTTP-frontend !</h1>
+    @(new java.util.Date().format("yyyy-MM-dd"))
+
+    @helper.form(uk.gov.hmrc.SSTTP.controllers.UserController.check) {
+
+    }
+
+
 }
