@@ -1,4 +1,4 @@
-@()(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
+@(userInputForm: Form[(String, String, String, String, String, String,String, String)])(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
 @import play.api.Play.current
 @import play.api.i18n.Messages
 @import play.api.mvc.Flash
@@ -9,8 +9,16 @@
     <h1>Hello from SSTTP-frontend !</h1>
     @(new java.util.Date().format("yyyy-MM-dd"))
 
-    @helper.form(uk.gov.hmrc.SSTTP.controllers.UserController.check) {
-
+    @helper.form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.check) {
+        @helper.inputText(userInputForm("Reference"))
+        @helper.inputPassword(userInputForm("Interest Rate"))
+        @helper.inputText(userInputForm("Liabilities"))
+        @helper.inputPassword(userInputForm("Initial Payment"))
+        @helper.inputText(userInputForm("Initial Payment Date"))
+        @helper.inputPassword(userInputForm("Start Date"))
+        @helper.inputText(userInputForm("End Date"))
+        @helper.inputPassword(userInputForm("Payment Frequency"))
+        <input type="submit" class="btn-primary" style="margin-left: -375px;">
     }
 
 

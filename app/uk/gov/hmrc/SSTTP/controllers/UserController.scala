@@ -5,19 +5,21 @@ import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 
+import scala.concurrent.Future
+
 /**
   * Created by yuan on 25/08/16.
   */
+object UserController extends UserController
 
-
-object UserController extends FrontendController {
+class UserController extends FrontendController with Controller {
   // a form contents user input information
 
   val userInputForm = Form(
     tuple(
       "Reference" -> nonEmptyText,
       "Interest Rate" -> nonEmptyText,
-      "Liabilitie" -> nonEmptyText,
+      "Liabilities" -> nonEmptyText,
       "Initial Payment" -> nonEmptyText,
       "Initial Payment Date" -> nonEmptyText,
       "Start Date" -> nonEmptyText,
@@ -25,8 +27,20 @@ object UserController extends FrontendController {
       "Payment Frequency" -> nonEmptyText
     )
   )
-  def check() = Action {
+  def check = Action.async{
     implicit request =>
-     Ok((uk.gov.hmrc.SSTTP.helloworld.html.hello_world()))
+      val input = userInputForm.bindFromRequest()
+
+        val Reference = input.data("Reference")
+        val InterestRate = input.data("Interest Rate")
+        val Liabilities = input.data("Liabilities")
+        val InitialPayment = input.data("Initial Payment")
+        val InitialPaymentDate = input.data("Initial Payment Date")
+        val StartDate = input.data("Start Date")
+        val EndDate = input.data("End Date")
+        val PaymentFrequency = input.data("Payment Frequency")
+
+
+      Future.successful(Redirect(routes.HelloWorld.helloWorld()))
   }
 }
