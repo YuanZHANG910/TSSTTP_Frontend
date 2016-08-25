@@ -54,7 +54,14 @@ class UserController extends FrontendController with Controller {
         }
       )
 
+      def calculateInterestRate(amountIP:Double, interestRate:Double, numberOfDays:Int): Double ={
+        var total:Double = amountIP*interestRate*numberOfDays/36600
 
+
+        total = BigDecimal(total).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+
+        total
+      }
 
 
 
