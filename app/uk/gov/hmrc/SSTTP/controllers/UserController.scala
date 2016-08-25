@@ -18,6 +18,11 @@ case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int
 class UserController extends FrontendController with Controller {
   // a form contents user input information
 
+  val result = Action.async {
+    implicit request =>
+      Future.successful(Ok(uk.gov.hmrc.SSTTP.helloworld.html.result()))
+  }
+
   val userInputForm = Form(
     mapping(
       "Reference" -> nonEmptyText,
@@ -45,7 +50,7 @@ class UserController extends FrontendController with Controller {
           val StartDate = input.data("Start Date")
           val EndDate = input.data("End Date")
           val PaymentFrequency = input.data("Payment Frequency")
-          Redirect(routes.HelloWorld.helloWorld())
+          Redirect(routes.UserController.result())
         },
         hasErrors = {
           formWithErrors =>
