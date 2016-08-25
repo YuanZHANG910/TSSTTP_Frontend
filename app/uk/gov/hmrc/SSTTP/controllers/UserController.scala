@@ -32,15 +32,24 @@ class UserController extends FrontendController with Controller {
       val input = userInputForm.bindFromRequest()
 
         val Reference = input.data("Reference")
-        val InterestRate = input.data("Interest Rate")
+        val InterestRate = input.data("Interest Rate").toDouble
         val Liabilities = input.data("Liabilities")
-        val InitialPayment = input.data("Initial Payment")
+        val InitialPayment = input.data("Initial Payment").toDouble
         val InitialPaymentDate = input.data("Initial Payment Date")
         val StartDate = input.data("Start Date")
         val EndDate = input.data("End Date")
         val PaymentFrequency = input.data("Payment Frequency")
 
 
+      calculateInterestRate(InitialPayment,InterestRate,100)
+
       Future.successful(Redirect(routes.HelloWorld.helloWorld()))
   }
+
+  def calculateInterestRate(amountIP:Double, interestRate:Double, numberOfDays:Int): Double ={
+    val total:Double = amountIP*interestRate*numberOfDays/36600
+
+    total
+  }
+
 }
