@@ -1,3 +1,5 @@
+@()(implicit request: Request[_])
+
 @import play.api.Play.current
 @import play.api.i18n.Messages
 @import play.api.mvc.Flash
@@ -6,5 +8,9 @@
 @uk.gov.hmrc.SSTTP.html.main_template(title = "Hello from SSTTP-frontend", bodyClasses = None) {
 <h1>Hello from SSTTP-frontend !</h1>
 Hello today's date is @(new java.util.Date().format("yyyy-MM-dd"))
+
+<p>Help</p>
+
+
 
 }

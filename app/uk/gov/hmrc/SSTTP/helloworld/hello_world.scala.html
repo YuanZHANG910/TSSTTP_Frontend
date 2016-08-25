@@ -11,13 +11,13 @@
 
     @helper.form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.check) {
         @helper.inputText(userInputForm("Reference"))
-        @helper.inputPassword(userInputForm("Interest Rate"))
+        @helper.inputText(userInputForm("Interest Rate"))
         @helper.inputText(userInputForm("Liabilities"))
-        @helper.inputPassword(userInputForm("Initial Payment"))
+        @helper.inputText(userInputForm("Initial Payment"))
         @helper.inputText(userInputForm("Initial Payment Date"))
-        @helper.inputPassword(userInputForm("Start Date"))
+        @helper.inputText(userInputForm("Start Date"))
         @helper.inputText(userInputForm("End Date"))
-        @helper.inputPassword(userInputForm("Payment Frequency"))
+        @helper.inputText(userInputForm("Payment Frequency"))
         <input type="submit" class="btn-primary" style="margin-left: 100" value="Calculate">
     }
 
