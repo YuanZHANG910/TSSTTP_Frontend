@@ -43,11 +43,14 @@ class UserController extends FrontendController with Controller {
 
       calculateInterestRate(InitialPayment,InterestRate,100)
 
-      Future.successful(Redirect(routes.HelloWorld.helloWorld()))
+      Future.successful(Ok(uk.gov.hmrc.SSTTP.helloworld.html.result()))
+
   }
 
   def calculateInterestRate(amountIP:Double, interestRate:Double, numberOfDays:Int): Double ={
-    val total:Double = amountIP*interestRate*numberOfDays/36600
+    var total:Double = amountIP*interestRate*numberOfDays/36600
+
+    total = BigDecimal(total).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
 
     total
   }
