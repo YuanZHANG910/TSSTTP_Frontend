@@ -1,11 +1,13 @@
 package uk.gov.hmrc.SSTTP.controllers
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 
-import scala.concurrent.Future
 
 /**
   * Created by yuan on 25/08/16.
@@ -45,11 +47,18 @@ class UserController extends FrontendController with Controller {
           val StartDate = input.data("Start Date")
           val EndDate = input.data("End Date")
           val PaymentFrequency = input.data("Payment Frequency")
+
+            val Date: SimpleDateFormat = new SimpleDateFormat("dd:mm:yyyy")
+            var begin =Date.parse(StartDate)
+            var end = Date.parse(EndDate)
+            var between = (end.getTime - begin.getTime)/(24*60*60*1000)
+          val result = Liabilities.toDouble * InterestRate.toDouble * between/36600
+          val Answer = "£"+result
+
           Redirect(routes.HelloWorld.helloWorld())
         },
         hasErrors = {
           formWithErrors =>
-            print("has errr")
             BadRequest(uk.gov.hmrc.SSTTP.helloworld.html.hello_world(formWithErrors))
         }
       )

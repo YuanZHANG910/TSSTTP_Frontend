@@ -23,7 +23,9 @@
                 @helper.inputDate(userInputForm("Initial Payment Date"))
                 @helper.inputDate(userInputForm("Start Date"))
                 @helper.inputDate(userInputForm("End Date"))
-                @helper.inputText(userInputForm("Payment Frequency"))
+                @helper.select(userInputForm("Payment Frequency"),
+                helper.options(List("Daily","Weekly","Fortnightly","4-weekly","Monthly","Quarterly")),
+                 '_default -> "-- Payment Frequency --")
             </b>
             <input type="submit" class="btn-primary" style="margin-left: 300px; color: #FF0000; " value="Calculate">
         }
