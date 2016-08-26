@@ -1,9 +1,11 @@
 package uk.gov.hmrc.SSTTP.controllers
 
+import org.joda.time.{DateTime, LocalDate}
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
+import uk.gov.hmrc.SSTTP.models.Tax
 
 import scala.concurrent.Future
 
@@ -13,12 +15,12 @@ import scala.concurrent.Future
 object UserController extends UserController
 
 case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int, IniDate:String,
-                     StartDate:String, EndDate:String, Frequency:String)
+                     StartDate:LocalDate, EndDate:LocalDate, Frequency:String)
 
 class UserController extends FrontendController with Controller {
   // a form contents user input information
 
-  val result = Action.async {
+  def result(ref:String) = Action.async {
     implicit request =>
       Future.successful(Ok(uk.gov.hmrc.SSTTP.helloworld.html.result()))
   }
@@ -30,8 +32,8 @@ class UserController extends FrontendController with Controller {
       "Liabilities" -> number,
       "Initial Payment" -> number,
       "Initial Payment Date" -> nonEmptyText,
-      "Start Date" -> nonEmptyText,
-      "End Date" -> nonEmptyText,
+      "Start Date" -> jodaLocalDate,
+      "End Date" -> jodaLocalDate,
       "Payment Frequency" -> nonEmptyText
     )
     (userInput.apply)(userInput.unapply)
@@ -50,6 +52,12 @@ class UserController extends FrontendController with Controller {
           val StartDate = input.data("Start Date")
           val EndDate = input.data("End Date")
           val PaymentFrequency = input.data("Payment Frequency")
+
+
+            val days = Tax.numberOfDays(StartDate,EndDate)
+
+            val calculate = Tax.calculateInterestRate(Liabilities,InterestRate,days)
+
           Redirect(routes.UserController.result())
         },
         hasErrors = {
@@ -59,14 +67,14 @@ class UserController extends FrontendController with Controller {
         }
       )
 
-      def calculateInterestRate(amountIP:Double, interestRate:Double, numberOfDays:Int): Double ={
-        var total:Double = amountIP*interestRate*numberOfDays/36600
-
-
-        total = BigDecimal(total).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
-
-        total
-      }
+//      def calculateInterestRate(amountIP:Double, interestRate:Double, numberOfDays:Int): Double ={
+//        var total:Double = amountIP*interestRate*numberOfDays/36600
+//
+//
+//        total = BigDecimal(total).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+//
+//        total
+//      }
 
 
 
