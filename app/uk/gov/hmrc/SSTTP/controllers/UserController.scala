@@ -1,12 +1,19 @@
 package uk.gov.hmrc.SSTTP.controllers
 
-import java.text.SimpleDateFormat
-import java.util.Date
 
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -48,11 +55,10 @@ class UserController extends FrontendController with Controller {
           val EndDate = input.data("End Date")
           val PaymentFrequency = input.data("Payment Frequency")
 
-            val Date: SimpleDateFormat = new SimpleDateFormat("dd:mm:yyyy")
-            var begin =Date.parse(StartDate)
-            var end = Date.parse(EndDate)
-            var between = (end.getTime - begin.getTime)/(24*60*60*1000)
-          val result = Liabilities.toDouble * InterestRate.toDouble * between/36600
+            val begin = new LocalDate(StartDate)
+            val end = new LocalDate(EndDate)
+            val days:Int = Days.daysBetween(begin, end).getDays()
+            val result = Liabilities.toDouble * InterestRate.toDouble * days/36600
           val Answer = "£"+result
 
           Redirect(routes.HelloWorld.helloWorld())
@@ -62,10 +68,5 @@ class UserController extends FrontendController with Controller {
             BadRequest(uk.gov.hmrc.SSTTP.helloworld.html.hello_world(formWithErrors))
         }
       )
-
-
-
-
-
   }
 }
