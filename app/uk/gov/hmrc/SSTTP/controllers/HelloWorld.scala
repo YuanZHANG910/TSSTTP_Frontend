@@ -13,8 +13,4 @@ trait HelloWorld extends FrontendController {
     val aForm = UserController.userInputForm
 		Future.successful(Ok(uk.gov.hmrc.SSTTP.helloworld.html.hello_world(aForm)))
   }
-
-
-
-
 }

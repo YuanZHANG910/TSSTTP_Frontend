@@ -1,0 +1,30 @@
+@(results:Set[uk.gov.hmrc.SSTTP.controllers.Results])(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
+@import play.api.Play.current
+@import play.api.i18n.Messages
+@import play.api.mvc.Flash
+@import helper._
+
+
+@uk.gov.hmrc.SSTTP.html.main_template(title = "Hello from SSTTP-frontend -- results ! ", bodyClasses = None) {
+<h1>Hello from SSTTP-frontend -- results !</h1>
+
+@for(i <- results){
+
+<dt style="font-size: 14px;">Description:
+
+<dt>@i.Reference
+<dt>  @i.Rate
+<dt>   @i.Liabilities
+<dt>   @i.IniPayment
+<dt>  @i.IniDate
+<dt>   @i.StartDate
+<dt> @i.EndDate
+<dt>  @i.Frequency
+<dt>  @i.Answer
+
+</dt>
+}
+
+
+
+}
