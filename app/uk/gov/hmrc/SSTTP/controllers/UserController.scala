@@ -14,7 +14,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
+import scala.concurrent.Future
 
 /**
   * Created by yuan on 25/08/16.
@@ -26,6 +26,11 @@ case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int
 
 class UserController extends FrontendController with Controller {
   // a form contents user input information
+
+  def result() = Action.async {
+    implicit request =>
+      Future.successful(Ok(uk.gov.hmrc.SSTTP.helloworld.html.result()))
+  }
 
   val userInputForm = Form(
     mapping(
@@ -61,7 +66,7 @@ class UserController extends FrontendController with Controller {
             val result = Liabilities.toDouble * InterestRate.toDouble * days/36600
           val Answer = "£"+result
 
-          Redirect(routes.HelloWorld.helloWorld())
+          Redirect(routes.UserController.result())
         },
         hasErrors = {
           formWithErrors =>

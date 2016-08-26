@@ -11,7 +11,7 @@
     <fieldset>
         Hello today's date is @(new java.util.Date().format("yyyy-MM-dd"))
 
-        @helper.form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.check) {
+        @helper.form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.result()) {
             <b style="margin-top: 25px; margin-left: 150px; width: 200px; float: left; border: none; font-family: 'Raleway', sans-serif;" >
                 @helper.inputText(userInputForm("Reference"))
                 @helper.inputText(userInputForm("Interest Rate"))
