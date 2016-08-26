@@ -6,14 +6,9 @@ import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.Days
+import org.joda.time.LocalDate
+
 
 
 /**
@@ -23,6 +18,9 @@ object UserController extends UserController
 
 case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int, IniDate:String,
                      StartDate:String, EndDate:String, Frequency:String)
+
+case class Results(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
+                     StartDate:String, EndDate:String, Frequency:String, Answer:String)
 
 class UserController extends FrontendController with Controller {
   // a form contents user input information
@@ -40,6 +38,9 @@ class UserController extends FrontendController with Controller {
     )
     (userInput.apply)(userInput.unapply)
   )
+
+  var results:Set[Results] = Set.empty
+
   def check = Action{
     implicit request =>
       val input = userInputForm.bindFromRequest()
@@ -59,9 +60,14 @@ class UserController extends FrontendController with Controller {
             val end = new LocalDate(EndDate)
             val days:Int = Days.daysBetween(begin, end).getDays()
             val result = Liabilities.toDouble * InterestRate.toDouble * days/36600
-          val Answer = "£"+result
+          val Answer = "£"+BigDecimal(result).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
 
-          Redirect(routes.HelloWorld.helloWorld())
+          val resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
+              StartDate, EndDate, PaymentFrequency, Answer)
+
+          results += resultSubmit
+
+          Redirect(routes.ResultsController.ResultsController())
         },
         hasErrors = {
           formWithErrors =>
