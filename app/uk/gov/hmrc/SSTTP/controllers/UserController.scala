@@ -55,12 +55,8 @@ class UserController extends FrontendController with Controller {
           val StartDate = input.data("Start Date")
           val EndDate = input.data("End Date")
           val PaymentFrequency = input.data("Payment Frequency")
-
-            val begin = new LocalDate(StartDate)
-            val end = new LocalDate(EndDate)
-            val days:Int = Days.daysBetween(begin, end).getDays()
-            val result = Liabilities.toDouble * InterestRate.toDouble * days/36600
-          val Answer = "£"+BigDecimal(result).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
+            
+          val Answer = "£"+BigDecimal(getResult(Liabilities.toDouble, InterestRate.toDouble, getDFDays(StartDate, EndDate))).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
 
           val resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
               StartDate, EndDate, PaymentFrequency, Answer)
@@ -75,4 +71,16 @@ class UserController extends FrontendController with Controller {
         }
       )
   }
+
+  def getDFDays(StartDate:String, EndDate:String): Int = {
+    Days.daysBetween(new LocalDate(StartDate),new LocalDate(EndDate) ).getDays()
+  }
+
+  def getResult(Liabilities:Double, InterestRate:Double, days:Int): Double ={
+    var result = 0.00
+    result = Liabilities * InterestRate * days/36600
+    result
+  }
+
+
 }
