@@ -10,6 +10,7 @@ import uk.gov.hmrc.SSTTP.connectora.helloWorldConnector
 import uk.gov.hmrc.play.http._
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+import uk.gov.hmrc.SSTTP.models.{UserInformationSubmit, UserInput}
 import uk.gov.hmrc.time.DateTimeUtils
 
 /**
@@ -17,51 +18,51 @@ import uk.gov.hmrc.time.DateTimeUtils
   */
 //object UserController extends UserController
 
-case class userInput(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
-                     StartDate:String, EndDate:String, Frequency:String)
+//case class userInput(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
+//                     StartDate:String, EndDate:String, Frequency:String)
 
-case class UserInformationSubmit(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
-                     StartDate:String, EndDate:String, Frequency:String, submissionTime : DateTime)
+//case class UserInformationSubmit(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
+//                     StartDate:String, EndDate:String, Frequency:String, submissionTime : DateTime)
 
 object UserController extends FrontendController with Controller{
 
-  implicit val format = Json.format[userInput]
+//  implicit val format = Json.format[UserInput]
   // a form contents user input information
 
-  implicit def userDetailsCaptureToSubmit(details: userInput) : UserInformationSubmit = {
-    val forSub = new UserInformationSubmit(
-      details.Reference,
-      details.Rate,
-      details.Liabilities,
-      details.IniPayment,
-      details.IniDate,
-      details.StartDate,
-      details.EndDate,
-      details.Frequency,
-      DateTimeUtils.now)
-    forSub
-  }
-
-
-  object UserInformationSubmit {
-    implicit val format = Json.format[UserInformationSubmit]
-  }
-
-//  val userInputForm = Form(
-//    mapping(
-//      "Reference" -> nonEmptyText,
-//      "Interest Rate" -> number,
-//      "Liabilities" -> number,
-//      "Initial Payment" -> number,
-//      "Initial Payment Date" -> nonEmptyText,
-//      "Start Date" -> nonEmptyText,
-//      "End Date" -> nonEmptyText,
-//      "Payment Frequency" -> nonEmptyText
-//    )
-//    (userInput.apply)(userInput.unapply)
-//  )
+//  implicit def userDetailsCaptureToSubmit(details: UserInput) : UserInformationSubmit = {
+//    val forSub = new UserInformationSubmit(
+//      details.Reference,
+//      details.Rate,
+//      details.Liabilities,
+//      details.IniPayment,
+//      details.IniDate,
+//      details.StartDate,
+//      details.EndDate,
+//      details.Frequency,
+//      DateTimeUtils.now)
+//    forSub
+//  }
 //
-//  var results:Set[Results] = Set.empty
+//
+//  object UserInformationSubmit {
+//    implicit val format = Json.format[UserInformationSubmit]
+//  }
+
+  val userInputForm = Form(
+    mapping(
+      "Reference" -> nonEmptyText,
+      "Interest Rate" -> nonEmptyText,
+      "Liabilities" -> nonEmptyText,
+      "Initial Payment" -> nonEmptyText,
+      "Initial Payment Date" -> nonEmptyText,
+      "Start Date" -> nonEmptyText,
+      "End Date" -> nonEmptyText,
+      "Payment Frequency" -> nonEmptyText
+    )
+    (UserInput.apply)(UserInput.unapply)
+  )
+//
+  var results:Set[UserInput] = Set.empty
 //
 //  def check = Action{
 //    implicit request =>
@@ -106,7 +107,7 @@ object UserController extends FrontendController with Controller{
 ////              results += resultSubmit
 //
 //          val helloWorld = helloWorldConnector
-//          Redirect(helloWorld.hello+"/SSTTP/hello-world").withSession(session)
+//          Redirect(helloWorld.helloRegUrl+"/SSTTP/hello-world").withSession(session)
 //        },
 //        hasErrors = {
 //          formWithErrors =>
