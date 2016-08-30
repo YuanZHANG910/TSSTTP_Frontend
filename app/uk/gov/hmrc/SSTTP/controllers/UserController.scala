@@ -1,14 +1,13 @@
 package uk.gov.hmrc.SSTTP.controllers
-
+//package hmrc.SSTTP.app.uk.gov.hmrc.SSTTP.controllers
 
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
-
 import org.joda.time.Days
 import org.joda.time.LocalDate
-
+import uk.gov.hmrc.SSTTP.connectora.helloWorldConnector
 
 
 /**
@@ -22,7 +21,7 @@ case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int
 case class Results(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
                      StartDate:String, EndDate:String, Frequency:String, Answer:String)
 
-class UserController extends FrontendController with Controller {
+class UserController extends FrontendController with Controller{
   // a form contents user input information
 
   val userInputForm = Form(
@@ -45,25 +44,48 @@ class UserController extends FrontendController with Controller {
     implicit request =>
       val input = userInputForm.bindFromRequest()
       userInputForm.bindFromRequest().fold(
+
         success = {
           Calculate =>
-          val Reference = input.data("Reference")
-          val InterestRate = input.data("Interest Rate")
-          val Liabilities = input.data("Liabilities")
-          val InitialPayment = input.data("Initial Payment")
-          val InitialPaymentDate = input.data("Initial Payment Date")
-          val StartDate = input.data("Start Date")
-          val EndDate = input.data("End Date")
-          val PaymentFrequency = input.data("Payment Frequency")
+//            val session:Session = request.session +
+//              ("Reference" -> input.data("Reference"))+
+//              ("InterestRate" ->  input.data("Interest Rate")) +
+//              ("Liabilities" ->  input.data("Liabilities")) +
+//              ("InitialPayment" ->  input.data("Initial Payment")) +
+//              ("InitialPaymentDate" ->  input.data("Initial Payment Date")) +
+//              (" StartDate" ->  input.data("Start Date")) +
+//              ("EndDate" ->  input.data("End Date"))+
+//              ("PaymentFrequency" ->  input.data("Payment Frequency"))
+              val Reference = input.data("Reference")
+              val InterestRate = input.data("Interest Rate")
+              val Liabilities = input.data("Liabilities")
+              val InitialPayment = input.data("Initial Payment")
+              val InitialPaymentDate = input.data("Initial Payment Date")
+              val StartDate = input.data("Start Date")
+              val EndDate = input.data("End Date")
+              val PaymentFrequency = input.data("Payment Frequency")
+
+            val session:Session = request.session +
+              ("Reference" -> Reference)+
+              ("InterestRate" -> InterestRate) +
+              ("Liabilities" -> Liabilities) +
+              ("InitialPayment" -> InitialPayment) +
+              ("InitialPaymentDate" -> InitialPaymentDate) +
+              (" StartDate" -> StartDate) +
+              ("EndDate" -> EndDate)+
+              ("PaymentFrequency" -> PaymentFrequency)
+
+//              val Answer = "£"+BigDecimal(getResult(Liabilities.toDouble, InterestRate.toDouble, getDFDays(StartDate, EndDate))).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
+//
+//              def resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
+//              StartDate, EndDate, PaymentFrequency, Answer)
+//
+//              results += resultSubmit
+
             
-          val Answer = "£"+BigDecimal(getResult(Liabilities.toDouble, InterestRate.toDouble, getDFDays(StartDate, EndDate))).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
 
-          val resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
-              StartDate, EndDate, PaymentFrequency, Answer)
-
-          results += resultSubmit
-
-          Redirect(routes.ResultsController.ResultsController())
+          val helloWorld = helloWorldConnector
+          Redirect(helloWorld.hello+"/SSTTP/hello-world").withSession(session)
         },
         hasErrors = {
           formWithErrors =>
@@ -81,6 +103,8 @@ class UserController extends FrontendController with Controller {
     result = Liabilities * InterestRate * days/36600
     result
   }
+
+
 
 
 }
