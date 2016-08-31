@@ -16,8 +16,8 @@ trait ResultsController extends FrontendController with Controller{
   val helloWorld = helloWorldConnector
 
   val ResultsController = Action.async { implicit request =>
-    val results = UserController.results
-    Future.successful(Redirect(helloWorld.hello+"/SSTTP/hello-world"))
+    //val results = UserController.results
+    Future.successful(Redirect(helloWorld.Url +"/SSTTP/hello-world"))
   }
 }
 

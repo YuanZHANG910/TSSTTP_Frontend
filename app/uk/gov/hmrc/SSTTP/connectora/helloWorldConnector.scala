@@ -1,33 +1,37 @@
 package uk.gov.hmrc.SSTTP.connectora
 
-
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.SSTTP.controllers.{ userInput}
+import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+
+import scala.concurrent.Future
 
 /**
   * Created by yuan on 30/08/16.
   */
 object helloWorldConnector extends helloWorldConnector with ServicesConfig{
-  lazy val hello = baseUrl("hello-world")
+  val Url = baseUrl("hello-world")
+  val http = WSHttp
 }
 
 trait helloWorldConnector{
-  val businessRegUrl: String
+  val Url: String
   val http: HttpGet with HttpPost
 
-  def submitDetails(userInformation : BetaUserInformationSubmit)(implicit hc: HeaderCarrier) : Future[BetaUserInformationSubmit] = {
-    val userJson = Json.toJson[BetaUserInformationSubmit](userInformation)
-    http.POST[JsValue, BetaUserInformationSubmit](s"$businessRegUrl/business-registration/beta-sign-up", userJson)
+  def submitDetails(userInformation : userInput)(implicit hc: HeaderCarrier) : Future[userInput] = {
+    val userJson = Json.toJson[userInput](userInformation)
+    http.POST[JsValue, userInput](s"$Url/SSTTP/hello-world", userJson)
   }
+}
 
-  def getUserDetailsForTests(queryParameter : String)
-                            (implicit hc : HeaderCarrier, rds : HttpReads[BetaUserInformationSubmit])
-  : Future[Option[BetaUserInformationSubmit]] = {
-    http.GET[Option[BetaUserInformationSubmit]](s"$businessRegUrl/business-registration/test-only/get-beta-user/$queryParameter")
-  }
+object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+  override val hooks = NoneRequired
+}
 
-  def clearUsersForTests()(implicit hc : HeaderCarrier) : Future[Option[Response]] = {
-    http.GET[Option[Response]](s"$businessRegUrl/business-registration/test-only/clear-beta-users")
-  }
+case class Response(resp : String)
+
+object Response {
+  implicit val format = Json.format[Response]
 }

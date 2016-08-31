@@ -1,36 +1,75 @@
-@(userInputForm: Form[uk.gov.hmrc.SSTTP.controllers.userInput])(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
+@(userInputForm: Form[uk.gov.hmrc.SSTTP.controllers.userInput])(implicit request: Request[_])
 @import play.api.Play.current
 @import play.api.i18n.Messages
 @import play.api.mvc.Flash
 @import helper._
 
+@import uk.gov.hmrc.play.views.html.helpers.{form, input, errorSummary, inputRadioGroup}
 
 @uk.gov.hmrc.SSTTP.html.main_template(title = "Hello from SSTTP-frontend", bodyClasses = None) {
+
+<fieldset>
     <h1>Hello from SSTTP-frontend !</h1>
 
-    <fieldset>
-        Hello today's date is @(new java.util.Date().format("yyyy-MM-dd"))
+    @form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.check) {
 
-        @helper.form(uk.gov.hmrc.SSTTP.controllers.routes.UserController.check) {
-            <b style="margin-top: 25px; margin-left: 150px; width: 200px; float: left; border: none; font-family: 'Raleway', sans-serif;" >
-                @helper.inputText(userInputForm("Reference"))
-                @helper.inputText(userInputForm("Interest Rate"))
-                @helper.inputText(userInputForm("Liabilities"))
-                @helper.inputText(userInputForm("Initial Payment"))
-            </b>
+        <div style="margin-top: 25px; margin-left: 150px; width: 180px; float: left; font-family: 'Raleway', sans-serif;">
 
-            <b style="margin-top: 0px; margin-left: 500px; width: 200px; float: auto; border: none; font-family: 'Raleway', sans-serif;" >
-                @helper.inputDate(userInputForm("Initial Payment Date"))
-                @helper.inputDate(userInputForm("Start Date"))
-                @helper.inputDate(userInputForm("End Date"))
-                @helper.select(userInputForm("Payment Frequency"),
-                helper.options(List("Daily","Weekly","Fortnightly","4-weekly","Monthly","Quarterly")),
-                 '_default -> "-- Payment Frequency --")
-            </b>
-            <input type="submit" class="btn-primary" style="margin-left: 300px; color: #FF0000; " value="Calculate">
-        }
-    </fieldset>
+            @input(
+            userInputForm("Reference"),
+            '_label -> Messages("Your Reference")
+            )
 
-<a href="http://localhost:9001/SSTTP/hello-world"> type="button"   </a>
+
+            @input(
+            userInputForm("Interest Rate"),
+            '_label -> Messages("Interest Rate")
+            )
+
+
+            @input(
+            userInputForm("Liabilities"),
+            '_label -> Messages("Liabilities")
+            )
+
+
+            @input(
+            userInputForm("Initial Payment"),
+            '_label -> Messages("Initial Payment")
+            )
+
+        </div>
+
+        <div style="margin-top: 0px; margin-left: 400px; width: 180px; font-family: 'Raleway', sans-serif;">
+            @inputDate(
+            userInputForm("Initial Payment Date"),
+            '_label -> Messages("Initial Payment Date")
+            )
+
+            @inputDate(
+            userInputForm("Start Date"),
+            '_label -> Messages("Start Date")
+            )
+
+            @inputDate(
+            userInputForm("End Date"),
+            '_label -> Messages("End Date")
+            )
+
+            @select(
+            userInputForm("Payment Frequency"),
+            helper.options(List("Daily","Weekly","Fortnightly","4-weekly","Monthly","Quarterly")),
+            '_default -> "-- Payment Frequency --",
+            '_label -> Messages("Payment Frequency")
+            )
+        </div>
+
+
+        <button style="margin-left: 300px; color: #FF0000;">Calculate</button>
+
+    }
+
+</fieldset>
+<a href="http://localhost:9001/SSTTP/hello-world"> <input type="button" style="margin-left: 30px; color: #FF0000; " value="ToSSTTP"/>  </a>
 
 }
