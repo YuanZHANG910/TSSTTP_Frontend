@@ -66,8 +66,10 @@ object UserController extends FrontendController with Controller{
       input.fold(
         success = {
           Calculate =>
-            helloWorld.submitDetails(Calculate).flatMap {
-              _ => Future.successful(Redirect(routes.ResultsController.ResultsController()))
+            helloWorld.submitDetails(Calculate).map {
+              resultFromBackEnd =>
+//                Redirect(uk.gov.hmrc.SSTTP.controllers.routes.HelloWorld.helloWorld)
+                Ok("it worked, value from backe ned was: " + resultFromBackEnd)
                 //Future.successful(Redirect(helloWorld.Url+"/SSTTP/hello-world").withSession(session))
             }
         },
