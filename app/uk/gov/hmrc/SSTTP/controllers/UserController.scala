@@ -1,30 +1,50 @@
 package uk.gov.hmrc.SSTTP.controllers
 
-
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.mvc._
+import org.joda.time.{DateTime, Days, LocalDate}
+import play.api.libs.json.Json
+import uk.gov.hmrc.SSTTP.connectora.helloWorldConnector
+import uk.gov.hmrc.time.DateTimeUtils
 
-import org.joda.time.Days
-import org.joda.time.LocalDate
-
+import scala.concurrent.Future
 
 
 /**
   * Created by yuan on 25/08/16.
   */
-object UserController extends UserController
 
 case class userInput(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int, IniDate:String,
                      StartDate:String, EndDate:String, Frequency:String)
 
-case class Results(Reference:String, Rate:String, Liabilities:String, IniPayment:String, IniDate:String,
-                     StartDate:String, EndDate:String, Frequency:String, Answer:String)
+case class UserInformationSubmit(Reference:String, Rate:Int, Liabilities:Int, IniPayment:Int, IniDate:String,
+                                 StartDate:String, EndDate:String, Frequency:String)
 
-class UserController extends FrontendController with Controller {
+object userInput{
+  implicit val format = Json.format[userInput]
   // a form contents user input information
 
+  implicit def userDetailsCaptureToSubmit(details: userInput) : UserInformationSubmit = {
+    UserInformationSubmit(
+      details.Reference,
+      details.Rate,
+      details.Liabilities,
+      details.IniPayment,
+      details.IniDate,
+      details.StartDate,
+      details.EndDate,
+      details.Frequency)
+  }
+}
+
+object UserInformationSubmit {
+  implicit val format = Json.format[UserInformationSubmit]
+}
+
+object UserController extends FrontendController with Controller{
+  val helloWorld = helloWorldConnector
   val userInputForm = Form(
     mapping(
       "Reference" -> nonEmptyText,
@@ -39,35 +59,23 @@ class UserController extends FrontendController with Controller {
     (userInput.apply)(userInput.unapply)
   )
 
-  var results:Set[Results] = Set.empty
+  def check = Action.async{ implicit request =>
 
-  def check = Action{
-    implicit request =>
       val input = userInputForm.bindFromRequest()
-      userInputForm.bindFromRequest().fold(
+
+      input.fold(
         success = {
           Calculate =>
-          val Reference = input.data("Reference")
-          val InterestRate = input.data("Interest Rate")
-          val Liabilities = input.data("Liabilities")
-          val InitialPayment = input.data("Initial Payment")
-          val InitialPaymentDate = input.data("Initial Payment Date")
-          val StartDate = input.data("Start Date")
-          val EndDate = input.data("End Date")
-          val PaymentFrequency = input.data("Payment Frequency")
-            
-          val Answer = "£"+BigDecimal(getResult(Liabilities.toDouble, InterestRate.toDouble, getDFDays(StartDate, EndDate))).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
-
-          val resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
-              StartDate, EndDate, PaymentFrequency, Answer)
-
-          results += resultSubmit
-
-          Redirect(routes.ResultsController.ResultsController())
+            helloWorld.submitDetails(Calculate).map {
+              resultFromBackEnd =>
+//                Redirect(uk.gov.hmrc.SSTTP.controllers.routes.HelloWorld.helloWorld)
+                Ok("it worked, value from backe ned was: " + resultFromBackEnd)
+                //Future.successful(Redirect(helloWorld.Url+"/SSTTP/hello-world").withSession(session))
+            }
         },
         hasErrors = {
           formWithErrors =>
-            BadRequest(uk.gov.hmrc.SSTTP.helloworld.html.hello_world(formWithErrors))
+            Future.successful(BadRequest(uk.gov.hmrc.SSTTP.helloworld.html.hello_world(formWithErrors)))
         }
       )
   }
@@ -82,5 +90,39 @@ class UserController extends FrontendController with Controller {
     result
   }
 
-
 }
+
+//            val session:Session = request.session +
+//              ("Reference" -> input.data("Reference"))+
+//              ("InterestRate" ->  input.data("Interest Rate")) +
+//              ("Liabilities" ->  input.data("Liabilities")) +
+//              ("InitialPayment" ->  input.data("Initial Payment")) +
+//              ("InitialPaymentDate" ->  input.data("Initial Payment Date")) +
+//              (" StartDate" ->  input.data("Start Date")) +
+//              ("EndDate" ->  input.data("End Date"))+
+//              ("PaymentFrequency" ->  input.data("Payment Frequency"))
+//            val Reference = input.data("Reference")
+//            val InterestRate = input.data("Interest Rate")
+//            val Liabilities = input.data("Liabilities")
+//            val InitialPayment = input.data("Initial Payment")
+//            val InitialPaymentDate = input.data("Initial Payment Date")
+//            val StartDate = input.data("Start Date")
+//            val EndDate = input.data("End Date")
+//            val PaymentFrequency = input.data("Payment Frequency")
+//
+//            val session: Session = request.session +
+//              ("Reference" -> Reference) +
+//              ("InterestRate" -> InterestRate) +
+//              ("Liabilities" -> Liabilities) +
+//              ("InitialPayment" -> InitialPayment) +
+//              ("InitialPaymentDate" -> InitialPaymentDate) +
+//              (" StartDate" -> StartDate) +
+//              ("EndDate" -> EndDate) +
+//              ("PaymentFrequency" -> PaymentFrequency)
+
+//              val Answer = "£"+BigDecimal(getResult(Liabilities.toDouble, InterestRate.toDouble, getDFDays(StartDate, EndDate))).setScale(2,BigDecimal.RoundingMode.HALF_UP).toDouble
+//
+//              def resultSubmit = new Results(Reference, InterestRate, Liabilities, InitialPayment, InitialPaymentDate,
+//              StartDate, EndDate, PaymentFrequency, Answer)
+//
+//              results += resultSubmit
