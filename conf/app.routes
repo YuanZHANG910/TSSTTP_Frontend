@@ -1,8 +1,8 @@
 # microservice specific routes
 
-GET         /interest-form                   uk.gov.hmrc.SSTTP.controllers.InputController.show
+#GET         /interest-form                   uk.gov.hmrc.SSTTP.controllers.InputController.show
 
-#GET        /hello-world                     uk.gov.hmrc.SSTTP.controllers.HelloWorld.helloWorld
-#GET        /check                           uk.gov.hmrc.SSTTP.controllers.UserController.check
+GET        /hello-world                     uk.gov.hmrc.SSTTP.controllers.HelloWorld.helloWorld
+GET        /check                           uk.gov.hmrc.SSTTP.controllers.UserController.check
 
-#GET        /hello-world-results             uk.gov.hmrc.SSTTP.controllers.ResultsController.ResultsController
+GET        /hello-world-results             uk.gov.hmrc.SSTTP.controllers.ResultsController.ResultsController
