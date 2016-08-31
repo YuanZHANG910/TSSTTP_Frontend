@@ -1,4 +1,4 @@
-@(results:Set[uk.gov.hmrc.SSTTP.controllers.Results])(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
+@(results:Set[uk.gov.hmrc.SSTTP.models.UserInformationSubmit])(implicit request: Request[_], flash: Flash, lang: Lang, session : Session)
 @import play.api.Play.current
 @import play.api.i18n.Messages
 @import play.api.mvc.Flash
@@ -23,7 +23,7 @@
         <dt>Start Date @i.StartDate
         <dt>End Date @i.EndDate
         <dt>Your Payment Frequency is @i.Frequency
-        <dt>Your interest need to pay @i.Answer
+        @*<dt>Your interest need to pay @i.Answer*@
 
     </h3>
     }
